@@ -1,0 +1,4 @@
+/**
+ * Smartライブラリ。
+ */
+package smart;
