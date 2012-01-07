@@ -577,12 +577,25 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      *
      * @return
      */
-    public TSource first() {
+    public TSource singleOrDefault() {
         if (iterable instanceof List) {
             List<TSource> list = (List<TSource>)iterable;
-            return list.isEmpty() ? null : list.get(0);
+            if (list.isEmpty()) {
+                return null;
+            } else if (list.size() == 1) {
+                return list.get(0);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (!iterator.hasNext()) {
+                return null;
+            }
+            TSource result = iterator.next();
+            if (!iterator.hasNext()) {
+                return result;
+            }
         }
-        return first(null);
+        throw new IllegalStateException("MoreThanOneElement");
     }
 
     /**
@@ -590,10 +603,93 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      * @param predicate
      * @return
      */
-    public TSource first(final Predicate<TSource> predicate) {
-        for (TSource obj : iterable) {
-            if ((predicate == null) || predicate.test(obj)) {
-                return obj;
+    public TSource singleOrDefault(final Predicate<TSource> predicate) {
+        TSource result = null;
+        int count = 0;
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                result = value;
+                count++;
+                if (count > 1) {
+                    throw new IllegalStateException("MoreThanOneElement");
+                }
+            }
+        }
+        return result;
+    }
+
+    public TSource single() {
+        if (iterable instanceof List) {
+            List<TSource> list = (List<TSource>)iterable;
+            if (list.isEmpty()) {
+                throw new IllegalStateException("NoElements");
+            } else if (list.size() == 1) {
+                return list.get(0);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (!iterator.hasNext()) {
+                throw new IllegalStateException("NoElements");
+            }
+            TSource result = iterator.next();
+            if (!iterator.hasNext()) {
+                return result;
+            }
+        }
+        throw new IllegalStateException("MoreThanOneElement");
+    }
+
+    /**
+     *
+     * @param predicate
+     * @return
+     */
+    public TSource single(final Predicate<TSource> predicate) {
+        TSource result = null;
+        int count = 0;
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                result = value;
+                count++;
+                if (count > 1) {
+                    throw new IllegalStateException("MoreThanOneElement");
+                }
+            }
+        }
+        if (count == 0) {
+            throw new IllegalStateException("MoreThanOneElement");
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TSource firstOrDefault() {
+        if (iterable instanceof List) {
+            List<TSource> list = (List<TSource>)iterable;
+            if (!list.isEmpty()) {
+                return list.get(0);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                return iterator.next();
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param predicate
+     * @return
+     */
+    public TSource firstOrDefault(final Predicate<TSource> predicate) {
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                return value;
             }
         }
         return null;
@@ -603,12 +699,94 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      *
      * @return
      */
+    public TSource first() {
+        if (iterable instanceof List) {
+            List<TSource> list = (List<TSource>)iterable;
+            if (!list.isEmpty()) {
+                return list.get(0);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                return iterator.next();
+            }
+        }
+        throw new IllegalStateException("NoElements");
+    }
+
+    /**
+     *
+     * @param predicate
+     * @return
+     */
+    public TSource first(final Predicate<TSource> predicate) {
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                return value;
+            }
+        }
+        throw new IllegalStateException("NoMatch");
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TSource lastOrDefault() {
+        if (iterable instanceof List) {
+            List<TSource> list = (List<TSource>)iterable;
+            if (!list.isEmpty()) {
+                list.get(list.size() - 1);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                TSource result;
+                do {
+                    result = iterator.next();
+                } while (iterator.hasNext());
+                return result;
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param predicate
+     * @return
+     */
+    public TSource lastOrDefault(final Predicate<TSource> predicate) {
+        TSource result = null;
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                result = value;
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @return
+     */
     public TSource last() {
         if (iterable instanceof List) {
             List<TSource> list = (List<TSource>)iterable;
-            return list.isEmpty() ? null : list.get(list.size() - 1);
+            if (!list.isEmpty()) {
+                return list.get(list.size() - 1);
+            }
+        } else {
+            Iterator<TSource> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                TSource result;
+                do {
+                    result = iterator.next();
+                } while (iterator.hasNext());
+                return result;
+            }
         }
-        return last(null);
+        throw new IllegalStateException("NoElements");
     }
 
     /**
@@ -617,13 +795,43 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      * @return
      */
     public TSource last(final Predicate<TSource> predicate) {
-        TSource value = null;
-        for (TSource obj : iterable) {
-            if ((predicate == null) || predicate.test(obj)) {
-                value = obj;
+        TSource result = null;
+        boolean find = false;
+        for (TSource value : iterable) {
+            if (predicate.test(value)) {
+                result = value;
+                find = true;
             }
         }
-        return value;
+        if (find) {
+            return result;
+        }
+        throw new IllegalStateException("NoMatch");
+    }
+
+    /**
+     *
+     * @param index
+     * @return
+     */
+    public TSource elementAtOrDefault(final int index) {
+        if (index > 0) {
+            if (iterable instanceof List) {
+                List<TSource> list = (List<TSource>)iterable;
+                if (index < list.size()) {
+                    return list.get(index);
+                }
+            } else {
+                int i = index;
+                for (TSource value : iterable) {
+                    if (i == 0) {
+                        return value;
+                    }
+                    i--;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -634,16 +842,20 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
     public TSource elementAt(final int index) {
         if (iterable instanceof List) {
             List<TSource> list = (List<TSource>)iterable;
-            return index < list.size() ? list.get(index) : null;
-        }
-        int i = index;
-        for (TSource obj : iterable) {
-            if (i == 0) {
-                return obj;
+            return list.get(index);
+        } else {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("Index: " + index);
             }
-            i--;
+            int i = index;
+            for (TSource value : iterable) {
+                if (i == 0) {
+                    return value;
+                }
+                i--;
+            }
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
-        return null;
     }
 
     // ------------------------------------------------------------
