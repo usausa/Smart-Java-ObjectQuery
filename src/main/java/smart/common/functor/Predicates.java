@@ -1,16 +1,69 @@
-package smart.common.functions;
+package smart.common.functor;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 
-import smart.common.functor.Func1;
-import smart.common.functor.Predicate;
 
 /**
  *
  */
 public final class Predicates {
+
+    @SuppressWarnings("rawtypes")
+    private static final Predicate FALSE = new Predicate() {
+        @Override
+        public boolean test(final Object param) {
+            return false;
+        }
+    };
+
+    @SuppressWarnings("rawtypes")
+    private static final Predicate TRUE = new Predicate() {
+        @Override
+        public boolean test(final Object param) {
+            return false;
+        }
+    };
+
+    // ------------------------------------------------------------
+    // Basic
+    // ------------------------------------------------------------
+
+    /**
+     *
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Predicate<T> alwaysFalse() {
+        return (Predicate<T>)FALSE;
+    }
+
+    /**
+     *
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Predicate<T> alwaysTrue() {
+        return (Predicate<T>)TRUE;
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param predicate
+     * @return
+     */
+    public static <T> Predicate<T> not(final Predicate<T> predicate) {
+        return new Predicate<T>() {
+            @Override
+            public boolean test(final T param) {
+                return !predicate.test(param);
+            }
+        };
+    }
 
     // ------------------------------------------------------------
     // Integer
@@ -533,11 +586,11 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> equal(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> equal(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) == 0));
             }
         };
     }
@@ -548,11 +601,11 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> notEqual(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> notEqual(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare != null)) || ((value != null) && (value.compareTo(compare) != 0));
+                return (value != compare) || ((value != null) && (value.compareTo(compare) != 0));
             }
         };
     }
@@ -563,7 +616,7 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> lessThan(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> lessThan(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
@@ -578,11 +631,11 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> lessEqualThan(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> lessEqualThan(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) <= 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) <= 0));
             }
         };
     }
@@ -593,7 +646,7 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> greaterThan(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> greaterThan(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
@@ -608,11 +661,11 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TValue extends Comparable<TValue>> Predicate<TValue> greaterEqualThan(final TValue compare) {
+    public static <TValue extends Comparable<? super TValue>> Predicate<TValue> greaterEqualThan(final TValue compare) {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) >= 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) >= 0));
             }
         };
     }
@@ -629,13 +682,13 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> equal(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> equal(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) == 0));
             }
         };
     }
@@ -648,13 +701,13 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> notEqual(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> notEqual(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare != null)) || ((value != null) && (value.compareTo(compare) != 0));
+                return (value != compare) || ((value != null) && (value.compareTo(compare) != 0));
             }
         };
     }
@@ -667,7 +720,7 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> lessThan(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> lessThan(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
@@ -686,13 +739,13 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> lessEqualThan(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> lessEqualThan(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) <= 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) <= 0));
             }
         };
     }
@@ -705,7 +758,7 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> greaterThan(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> greaterThan(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
@@ -724,13 +777,13 @@ public final class Predicates {
      * @param compare
      * @return
      */
-    public static <TSource, TValue extends Comparable<TValue>> Predicate<TSource> greaterEqualThan(
+    public static <TSource, TValue extends Comparable<? super TValue>> Predicate<TSource> greaterEqualThan(
             final Func1<TSource, TValue> selector, final TValue compare) {
         return new Predicate<TSource>() {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) >= 0));
+                return (value == compare) || ((value != null) && (value.compareTo(compare) >= 0));
             }
         };
     }
