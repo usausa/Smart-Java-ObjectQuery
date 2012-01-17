@@ -38,7 +38,7 @@ import smart.common.collectioon.iterator.TakeWhileIterator;
 import smart.common.collectioon.iterator.UnionIterator;
 import smart.common.collectioon.iterator.WhereIterator;
 import smart.common.collectioon.iterator.ZipIterator;
-import smart.common.functor.Action;
+import smart.common.functor.Action1;
 import smart.common.functor.Func1;
 import smart.common.functor.Func2;
 import smart.common.functor.Predicate;
@@ -736,7 +736,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
         if (iterable instanceof List) {
             List<TSource> list = (List<TSource>)iterable;
             if (!list.isEmpty()) {
-                list.get(list.size() - 1);
+                return list.get(list.size() - 1);
             }
         } else {
             Iterator<TSource> iterator = iterable.iterator();
@@ -815,7 +815,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      * @return
      */
     public TSource elementAtOrDefault(final int index) {
-        if (index > 0) {
+        if (index >= 0) {
             if (iterable instanceof List) {
                 List<TSource> list = (List<TSource>)iterable;
                 if (index < list.size()) {
@@ -1582,7 +1582,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      *
      * @param action
      */
-    public  void each(final Action<TSource> action) {
+    public  void each(final Action1<TSource> action) {
         for (TSource obj : iterable) {
             action.run(obj);
         }

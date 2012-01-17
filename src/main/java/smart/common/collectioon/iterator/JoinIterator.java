@@ -25,6 +25,8 @@ public class JoinIterator<TOuter, TInner, TKey, TResult> implements Iterator<TRe
 
     private final Func2<TOuter, TInner, TResult> resultSelector;
 
+    private TOuter current;
+
     private Iterator<TInner> inner;
 
     private Boolean hasNext = null;
@@ -61,7 +63,6 @@ public class JoinIterator<TOuter, TInner, TKey, TResult> implements Iterator<TRe
             return hasNext;
         }
 
-        TOuter current = null;
         while (true) {
             while (inner == null) {
                 if (!outer.hasNext()) {

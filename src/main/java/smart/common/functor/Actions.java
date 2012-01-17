@@ -8,7 +8,7 @@ import java.io.PrintStream;
  */
 public final class Actions {
 
-    private static final Action<Void> NO_ACTION = new Action<Void>() {
+    private static final Action1<Void> NO_ACTION = new Action1<Void>() {
         @Override
         public void run(final Void value) {
         }
@@ -24,8 +24,8 @@ public final class Actions {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Action<T> noAction() {
-        return (Action<T>)NO_ACTION;
+    public static <T> Action1<T> noAction() {
+        return (Action1<T>)NO_ACTION;
     }
 
     // ------------------------------------------------------------
@@ -37,8 +37,8 @@ public final class Actions {
      * @param run
      * @return
      */
-    public static <T> Action<T> asAction(final Runnable run) {
-        return new Action<T>() {
+    public static <T> Action1<T> asAction(final Runnable run) {
+        return new Action1<T>() {
             @Override
             public void run(final T param) {
                 run.run();
@@ -52,7 +52,7 @@ public final class Actions {
      * @param action
      * @return
      */
-    public static <T> Runnable asRunnable(final Action<T> action) {
+    public static <T> Runnable asRunnable(final Action1<T> action) {
         return new Runnable() {
             @Override
             public void run() {
@@ -68,7 +68,7 @@ public final class Actions {
      * @param param
      * @return
      */
-    public static <T> Runnable asRunnable(final Action<T> action, final T param) {
+    public static <T> Runnable asRunnable(final Action1<T> action, final T param) {
         return new Runnable() {
             @Override
             public void run() {
@@ -87,8 +87,8 @@ public final class Actions {
      * @param stream
      * @return
      */
-    public static <T> Action<T> print(final PrintStream stream) {
-        return new Action<T>() {
+    public static <T> Action1<T> print(final PrintStream stream) {
+        return new Action1<T>() {
             @Override
             public void run(final T param) {
                 stream.print(param);
@@ -102,8 +102,8 @@ public final class Actions {
      * @param stream
      * @return
      */
-    public static <T> Action<T> println(final PrintStream stream) {
-        return new Action<T>() {
+    public static <T> Action1<T> println(final PrintStream stream) {
+        return new Action1<T>() {
             @Override
             public void run(final T param) {
                 stream.println(param);

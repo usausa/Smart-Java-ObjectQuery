@@ -20,6 +20,8 @@ public class SelectManyIterator<TSource, TCollection, TResult> implements Iterat
 
     private final Func2<TSource, TCollection, TResult> resultSelector;
 
+    private TSource current;
+
     private Iterator<TCollection> collection;
 
     private Boolean hasNext = null;
@@ -48,7 +50,6 @@ public class SelectManyIterator<TSource, TCollection, TResult> implements Iterat
         }
 
         while (true) {
-            TSource current = null;
             while (collection == null) {
                 if (!source.hasNext()) {
                     hasNext = false;

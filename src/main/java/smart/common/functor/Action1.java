@@ -1,6 +1,6 @@
 package smart.common.functor;
 
-public interface Action<T> {
+public interface Action1<T> {
 
     void run(T param);
 }
