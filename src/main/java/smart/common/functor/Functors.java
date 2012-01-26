@@ -33,14 +33,14 @@ public final class Functors {
     private static final Func2<Object, Object, Boolean> EQUAL = new Func2<Object, Object, Boolean>() {
         @Override
         public Boolean eval(final Object param1, final Object param2) {
-            return ((param1 == null) && (param2 == null)) || ((param1 != null) && param1.equals(param2));
+            return (param1 == null) ? (param2 == null) : param1.equals(param2);
         }
     };
 
     private static final Func2<Object, Object, Boolean> NOT_EQUAL = new Func2<Object, Object, Boolean>() {
         @Override
         public Boolean eval(final Object param1, final Object param2) {
-            return !(((param1 == null) && (param2 == null)) || ((param1 != null) && param1.equals(param2)));
+            return !((param1 == null) ? (param2 == null) : param1.equals(param2));
         }
     };
 
@@ -86,7 +86,7 @@ public final class Functors {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Func2<T, T, Boolean> equals() {
+    public static <T> Func2<T, T, Boolean> equal() {
         return (Func2<T, T, Boolean>)EQUAL;
     }
 
@@ -96,7 +96,7 @@ public final class Functors {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Func2<T, T, Boolean> notEquals() {
+    public static <T> Func2<T, T, Boolean> notEqual() {
         return (Func2<T, T, Boolean>)NOT_EQUAL;
     }
 

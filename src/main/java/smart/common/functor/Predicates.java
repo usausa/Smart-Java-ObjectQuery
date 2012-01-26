@@ -252,7 +252,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (object == null)) || ((value != null) && value.equals(object));
+                return (value == null) ? (object == null) : value.equals(object);
             }
         };
     }
@@ -267,7 +267,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return !(((value == null) && (object == null)) || ((value != null) && value.equals(object)));
+                return !((value == null) ? (object == null) : value.equals(object));
             }
         };
     }
@@ -285,7 +285,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) == 0);
             }
         };
     }
@@ -300,7 +300,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return !(((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0)));
+                return !((value == null) ? (compare == null) : (value.compareTo(compare) == 0));
             }
         };
     }
@@ -330,7 +330,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) <= 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) <= 0);
             }
         };
     }
@@ -360,7 +360,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) >= 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) >= 0);
             }
         };
     }
@@ -383,7 +383,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) == 0);
             }
         };
     }
@@ -402,7 +402,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return !(((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) == 0)));
+                return !((value == null) ? (compare == null) : (value.compareTo(compare) == 0));
             }
         };
     }
@@ -440,7 +440,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) <= 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) <= 0);
             }
         };
     }
@@ -478,7 +478,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (value.compareTo(compare) >= 0));
+                return (value == null) ? (compare == null) : (value.compareTo(compare) >= 0);
             }
         };
     }
@@ -498,7 +498,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) == 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) == 0);
             }
         };
     }
@@ -514,7 +514,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return !(((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) == 0)));
+                return !((value == null) ? (compare == null) : (comparator.compare(value, compare) == 0));
             }
         };
     }
@@ -546,7 +546,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) <= 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) <= 0);
             }
         };
     }
@@ -578,7 +578,7 @@ public final class Predicates {
         return new Predicate<TValue>() {
             @Override
             public boolean test(final TValue value) {
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) >= 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) >= 0);
             }
         };
     }
@@ -602,7 +602,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) == 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) == 0);
             }
         };
     }
@@ -622,7 +622,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return !(((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) == 0)));
+                return !((value == null) ? (compare == null) : (comparator.compare(value, compare) == 0));
             }
         };
     }
@@ -662,7 +662,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) <= 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) <= 0);
             }
         };
     }
@@ -702,7 +702,7 @@ public final class Predicates {
             @Override
             public boolean test(final TSource source) {
                 TValue value = selector.eval(source);
-                return ((value == null) && (compare == null)) || ((value != null) && (comparator.compare(value, compare) >= 0));
+                return (value == null) ? (compare == null) : (comparator.compare(value, compare) >= 0);
             }
         };
     }

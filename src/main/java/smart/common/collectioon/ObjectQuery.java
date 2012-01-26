@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import smart.common.collectioon.iterator.CastIterator;
 import smart.common.collectioon.iterator.ConactIterator;
 import smart.common.collectioon.iterator.DefaultIfEmptyIterator;
 import smart.common.collectioon.iterator.DistinctIterator;
@@ -26,6 +27,7 @@ import smart.common.collectioon.iterator.GroupedIterator;
 import smart.common.collectioon.iterator.IndexedIterator;
 import smart.common.collectioon.iterator.IntersectIterator;
 import smart.common.collectioon.iterator.JoinIterator;
+import smart.common.collectioon.iterator.OfTypeIterator;
 import smart.common.collectioon.iterator.RangeIterator;
 import smart.common.collectioon.iterator.RepeatIterator;
 import smart.common.collectioon.iterator.SelectIterator;
@@ -539,6 +541,22 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
 
     /**
      *
+     * @return
+     */
+    public boolean any() {
+        return iterable.iterator().hasNext();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return !iterable.iterator().hasNext();
+    }
+
+    /**
+     *
      * @param value
      * @return
      */
@@ -547,7 +565,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
             return ((Collection<TSource>)iterable).contains(value);
         }
         for (TSource obj : iterable) {
-            if (((obj == null) && (value == null)) || ((obj != null) && (obj.equals(value)))) {
+            if ((obj == null) ? (value == null) : obj.equals(value)) {
                 return true;
             }
         }
@@ -1229,6 +1247,21 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
         });
     }
 
+    /**
+     *
+     * @param <TResult>
+     * @param clazz
+     * @return
+     */
+    public <TResult> ObjectQuery<TResult> ofType(final Class<TResult> clazz) {
+        return new ObjectQuery<TResult>(new Iterable<TResult>() {
+            @Override
+            public Iterator<TResult> iterator() {
+                return new OfTypeIterator<TSource, TResult>(iterable.iterator(), clazz);
+            }
+        });
+    }
+
     // ------------------------------------------------------------
     // グルーピング
     // ------------------------------------------------------------
@@ -1345,6 +1378,20 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
     // ------------------------------------------------------------
     // マップ
     // ------------------------------------------------------------
+
+    /**
+     *
+     * @param <TResult>
+     * @return
+     */
+    public <TResult> ObjectQuery<TResult> cast() {
+        return new ObjectQuery<TResult>(new Iterable<TResult>() {
+            @Override
+            public Iterator<TResult> iterator() {
+                return new CastIterator<TSource, TResult>(iterable.iterator());
+            }
+        });
+    }
 
     /**
      *
@@ -1575,16 +1622,65 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
     }
 
     // ------------------------------------------------------------
-    // アクション
+    // 比較
     // ------------------------------------------------------------
 
     /**
      *
-     * @param action
+     * @param second
+     * @return
      */
-    public  void each(final Action1<TSource> action) {
+    public boolean seauenceEqual(final Iterable<TSource> second) {
+        Iterator<TSource> iterator2 = second.iterator();
+        for (TSource obj1 : iterable) {
+            if (!iterator2.hasNext()) {
+                return false;
+            }
+            TSource obj2 = iterator2.next();
+            if (!((obj1 == null) ? (obj2 == null) : obj1.equals(obj2))) {
+                return false;
+            }
+        }
+        if (iterator2.hasNext()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param second
+     * @param comparator
+     * @return
+     */
+    public boolean seauenceEqual(final Iterable<TSource> second, final Comparator<TSource> comparator) {
+        Iterator<TSource> iterator2 = second.iterator();
+        for (TSource obj1 : iterable) {
+            if (!iterator2.hasNext()) {
+                return false;
+            }
+            TSource obj2 = iterator2.next();
+            if (comparator.compare(obj1, obj2) != 0) {
+                return false;
+            }
+        }
+        if (iterator2.hasNext()) {
+            return false;
+        }
+        return true;
+    }
+
+    // ------------------------------------------------------------
+    // 繰り返し
+    // ------------------------------------------------------------
+
+    /**
+     *
+     * @param onNext
+     */
+    public  void forEach(final Action1<TSource> onNext) {
         for (TSource obj : iterable) {
-            action.run(obj);
+            onNext.run(obj);
         }
     }
 }

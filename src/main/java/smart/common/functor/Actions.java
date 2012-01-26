@@ -8,7 +8,13 @@ import java.io.PrintStream;
  */
 public final class Actions {
 
-    private static final Action1<Void> NO_ACTION = new Action1<Void>() {
+    private static final Action0 NO_ACTION0 = new Action0() {
+        @Override
+        public void run() {
+        }
+    };
+
+    private static final Action1<Void> NO_ACTION1 = new Action1<Void>() {
         @Override
         public void run(final Void value) {
         }
@@ -20,12 +26,20 @@ public final class Actions {
 
     /**
      *
+     * @return
+     */
+    public static Action0 noAction0() {
+        return NO_ACTION0;
+    }
+
+    /**
+     *
      * @param <T>
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Action1<T> noAction() {
-        return (Action1<T>)NO_ACTION;
+    public static <T> Action1<T> noAction1() {
+        return (Action1<T>)NO_ACTION1;
     }
 
     // ------------------------------------------------------------
@@ -37,7 +51,21 @@ public final class Actions {
      * @param run
      * @return
      */
-    public static <T> Action1<T> asAction(final Runnable run) {
+    public static Action0 asAction0(final Runnable run) {
+        return new Action0() {
+            @Override
+            public void run() {
+                run.run();
+            }
+        };
+    }
+
+    /**
+     *
+     * @param run
+     * @return
+     */
+    public static <T> Action1<T> asAction1(final Runnable run) {
         return new Action1<T>() {
             @Override
             public void run(final T param) {
@@ -48,15 +76,14 @@ public final class Actions {
 
     /**
      *
-     * @param <T>
      * @param action
      * @return
      */
-    public static <T> Runnable asRunnable(final Action1<T> action) {
+    public static Runnable asRunnable(final Action0 action) {
         return new Runnable() {
             @Override
             public void run() {
-                action.run(null);
+                action.run();
             }
         };
     }

@@ -72,10 +72,10 @@ public class Tuple4<T1, T2, T3, T4> {
         }
 
         Tuple4<T1, T2, T3, T4> other = (Tuple4<T1, T2, T3, T4>) obj;
-        return ((value1 == other.value1) || ((value1 != null) && (value1.equals(other.value1))))
-                && ((value2 == other.value2) || ((value2 != null) && (value2.equals(other.value2))))
-                && ((value3 == other.value3) || ((value3 != null) && (value3.equals(other.value3))))
-                && ((value4 == other.value4) || ((value4 != null) && (value4.equals(other.value4))));
+        return ((value1 == null) ? (other.value1 == null) : (value1.equals(other.value1))) &&
+               ((value2 == null) ? (other.value2 == null) : (value2.equals(other.value2))) &&
+               ((value3 == null) ? (other.value3 == null) : (value3.equals(other.value3))) &&
+               ((value4 == null) ? (other.value4 == null) : (value4.equals(other.value4)));
     }
 
     @Override

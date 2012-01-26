@@ -61,9 +61,9 @@ public class Tuple3<T1, T2, T3> {
         }
 
         Tuple3<T1, T2, T3> other = (Tuple3<T1, T2, T3>) obj;
-        return ((value1 == other.value1) || ((value1 != null) && (value1.equals(other.value1))))
-                && ((value2 == other.value2) || ((value2 != null) && (value2.equals(other.value2))))
-                && ((value3 == other.value3) || ((value3 != null) && (value3.equals(other.value3))));
+        return ((value1 == null) ? (other.value1 == null) : (value1.equals(other.value1))) &&
+               ((value2 == null) ? (other.value2 == null) : (value2.equals(other.value2))) &&
+               ((value3 == null) ? (other.value3 == null) : (value3.equals(other.value3)));
     }
 
     @Override

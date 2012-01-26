@@ -54,8 +54,8 @@ public class Tuple2<T1, T2> {
         }
 
         Tuple2<T1, T2> other = (Tuple2<T1, T2>) obj;
-        return ((value1 == other.value1) || ((value1 != null) && (value1.equals(other.value1))))
-                && ((value2 == other.value2) || ((value2 != null) && (value2.equals(other.value2))));
+        return ((value1 == null) ? (other.value1 == null) : (value1.equals(other.value1))) &&
+               ((value2 == null) ? (other.value2 == null) : (value2.equals(other.value2)));
     }
 
     @Override
