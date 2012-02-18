@@ -468,7 +468,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      * @param keySelector
      * @return
      */
-    public <TKey extends Comparable<? super TKey>> ObjectQuery<TSource> order(final Func1<TSource, TKey> keySelector) {
+    public <TKey extends Comparable<? super TKey>> ObjectQuery<TSource> orderBy(final Func1<TSource, TKey> keySelector) {
         List<TSource> list = toList();
         Collections.sort(list, new Comparator<TSource>() {
             @Override
@@ -486,7 +486,7 @@ public final class ObjectQuery<TSource> implements Iterable<TSource> {
      * @param comparator
      * @return
      */
-    public ObjectQuery<TSource> order(final Comparator<TSource> comparator) {
+    public ObjectQuery<TSource> orderBy(final Comparator<TSource> comparator) {
         List<TSource> list = toList();
         Collections.sort(list, new Comparator<TSource>() {
             @Override

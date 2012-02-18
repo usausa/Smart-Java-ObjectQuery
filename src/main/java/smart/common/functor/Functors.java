@@ -44,6 +44,13 @@ public final class Functors {
         }
     };
 
+    private static final Func1<Object, String> STRING = new Func1<Object, String>() {
+        @Override
+        public String eval(final Object param1) {
+            return param1.toString();
+        }
+    };
+
     // ------------------------------------------------------------
     // Basic
     // ------------------------------------------------------------
@@ -98,6 +105,16 @@ public final class Functors {
     @SuppressWarnings("unchecked")
     public static <T> Func2<T, T, Boolean> notEqual() {
         return (Func2<T, T, Boolean>)NOT_EQUAL;
+    }
+
+    /**
+     *
+     * @param <T>
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Func1<T, String> string() {
+        return (Func1<T, String>)STRING;
     }
 
     // ------------------------------------------------------------
@@ -353,9 +370,20 @@ public final class Functors {
         };
     }
 
-    // ------------------------------------------------------------
-    // Compare
-    // ------------------------------------------------------------
+    /**
+     *
+     * @param <TSource>
+     * @param func
+     * @return
+     */
+    public static <T, TKey extends Comparable<TKey>> Comparator<T> comparator(final Func1<? super T, TKey> func) {
+        return new Comparator<T>() {
+            @Override
+            public int compare(final T o1, final T o2) {
+                return func.eval(o1).compareTo(func.eval(o2));
+            };
+        };
+    }
 
     /**
      *
